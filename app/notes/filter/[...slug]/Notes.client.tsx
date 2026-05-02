@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
@@ -23,13 +23,13 @@ type NotesResponse = {
 function useDebounce(value: string, delay = 300) {
   const [debounced, setDebounced] = useState(value);
 
-  useState(() => {
+  useEffect(() => {
     const handler = setTimeout(() => {
       setDebounced(value);
     }, delay);
 
     return () => clearTimeout(handler);
-  });
+  }, [value, delay]);
 
   return debounced;
 }
@@ -37,14 +37,14 @@ function useDebounce(value: string, delay = 300) {
 export default function NotesClient({ tag }: Props) {
   const router = useRouter();
 
-  // ✅ PAGE STATE (FIX REVIEWS REQUIREMENT)
+ 
   const [page, setPage] = useState(1);
 
-  // SEARCH STATE
+  // search state
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search);
 
-  // QUERY
+  // query
   const { data } = useQuery<NotesResponse>({
     queryKey: ['notes', tag, debouncedSearch, page],
     queryFn: () => getNotes(tag, debouncedSearch, page),
@@ -53,11 +53,13 @@ export default function NotesClient({ tag }: Props) {
   const notes = data?.items ?? [];
   const totalPages = data?.totalPages ?? 1;
 
+  // search handler
   const handleSearch = (value: string) => {
     setSearch(value);
-    setPage(1); // sync state reset
+    setPage(1);
   };
 
+  
   const handlePageChange = (p: number) => {
     setPage(p);
   };
