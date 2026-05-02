@@ -49,9 +49,11 @@ export default function NoteForm() {
       />
 
       <select name="tag" value={draft.tag} onChange={handleChange}>
+        <option value="Todo">Todo</option>
+        <option value="Work">Work</option>
+        <option value="Personal">Personal</option>
         <option value="Meeting">Meeting</option>
         <option value="Shopping">Shopping</option>
-        <option value="Work">Work</option>
       </select>
 
       <button type="submit">Create</button>
