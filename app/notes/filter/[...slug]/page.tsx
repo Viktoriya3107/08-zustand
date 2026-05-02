@@ -1,11 +1,12 @@
+import type { Metadata } from 'next';
 import { getNotes } from '@/lib/api/notes';
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string[] };
-}) {
-  const filter = params.slug?.join('/') || 'all';
+export async function generateMetadata(
+  { params }: { params: Promise<{ slug: string[] }> }
+): Promise<Metadata> {
+  const { slug } = await params;
+
+  const filter = slug?.join('/') || 'all';
 
   return {
     title: `Filter: ${filter}`,
@@ -13,9 +14,11 @@ export async function generateMetadata({
     openGraph: {
       title: `Filter: ${filter}`,
       description: `Filtered notes by ${filter}`,
-      url: `/notes/filter/${filter}`,
+      url: `https://notehub.com/notes/filter/${filter}`,
       images: [
-        'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
+        {
+          url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
+        },
       ],
     },
   };
@@ -24,9 +27,11 @@ export async function generateMetadata({
 export default async function FilterPage({
   params,
 }: {
-  params: { slug: string[] };
+  params: Promise<{ slug: string[] }>;
 }) {
-  const filter = params.slug?.[0] || 'all';
+  const { slug } = await params;
+
+  const filter = slug?.[0] || 'all';
 
   const notes = await getNotes();
 
