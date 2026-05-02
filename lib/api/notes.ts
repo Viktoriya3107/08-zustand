@@ -3,11 +3,16 @@ import { Note, CreateNoteDTO } from '@/types/note';
 
 const BASE_URL = 'https://your-api-url.com';
 
+export type NotesResponse = {
+  items: Note[];
+  totalPages: number;
+};
+
 export const getNotes = async (
   tag?: string,
   search?: string,
   page: number = 1
-): Promise<Note[]> => {
+): Promise<NotesResponse> => {
   const { data } = await axios.get(`${BASE_URL}/notes`, {
     params: {
       tag,

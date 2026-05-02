@@ -1,5 +1,11 @@
 import type { Metadata } from 'next';
 import { getNotes } from '@/lib/api/notes';
+import type { Note } from '@/types/note';
+
+type NotesResponse = {
+  items: Note[];
+  totalPages: number;
+};
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string[] }> }
@@ -33,7 +39,8 @@ export default async function FilterPage({
 
   const filter = slug?.[0] || 'all';
 
-  const notes = await getNotes();
+  const data: NotesResponse = await getNotes();
+  const notes = data.items;
 
   const filtered =
     filter === 'all'
