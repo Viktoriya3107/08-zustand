@@ -37,7 +37,7 @@ function useDebounce(value: string, delay = 300) {
 export default function NotesClient({ tag }: Props) {
   const router = useRouter();
 
- 
+  // pagination state (required by review)
   const [page, setPage] = useState(1);
 
   // search state
@@ -59,7 +59,7 @@ export default function NotesClient({ tag }: Props) {
     setPage(1);
   };
 
-  
+  // pagination handler
   const handlePageChange = (p: number) => {
     setPage(p);
   };
@@ -68,13 +68,15 @@ export default function NotesClient({ tag }: Props) {
     <div>
       <SearchBox onSearch={handleSearch} />
 
-      <NoteList notes={notes} />
+      {notes.length > 0 && <NoteList notes={notes} />}
 
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        onChange={handlePageChange}
-      />
+      {notes.length > 0 && (
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          onChange={handlePageChange}
+        />
+      )}
 
       <button onClick={() => router.push('/notes/action/create')}>
         Create note
